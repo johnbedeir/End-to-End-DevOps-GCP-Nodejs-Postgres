@@ -26,5 +26,5 @@ jobs:
           GCR_REPOSITORY: nodejs-app
           IMAGE_TAG: latest
         run: |
-          docker build -t gcr.io/$GCP_PROJECT/$GCR_REPOSITORY:$IMAGE_TAG ./Go-app/
+          docker build -t gcr.io/$GCP_PROJECT/$GCR_REPOSITORY:$IMAGE_TAG .
           docker push gcr.io/$GCP_PROJECT/$GCR_REPOSITORY:$IMAGE_TAG
