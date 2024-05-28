@@ -12,11 +12,13 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: Log in to Google Container Registry
-        run: echo "${{ secrets.GCP_CREDENTIALS }}" | docker login -u _json_key --password-stdin https://gcr.io
+      - name: Configure Docker for Google Cloud
+        run: gcloud auth configure-docker
 
       - name: Build, tag, and push image to Google Container Registry
         env:
@@ -24,5 +26,5 @@ jobs:
           GCR_REPOSITORY: nodejs-app
           IMAGE_TAG: latest
         run: |
-          docker buildx build --platform linux/amd64 -t gcr.io/$GCP_PROJECT/$GCR_REPOSITORY:$IMAGE_TAG .
+          docker build -t gcr.io/$GCP_PROJECT/$GCR_REPOSITORY:$IMAGE_TAG .
           docker push gcr.io/$GCP_PROJECT/$GCR_REPOSITORY:$IMAGE_TAG
