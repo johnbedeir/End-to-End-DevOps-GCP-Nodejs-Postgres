@@ -12,6 +12,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
