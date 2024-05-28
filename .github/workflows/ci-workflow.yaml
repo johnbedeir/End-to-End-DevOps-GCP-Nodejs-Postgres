@@ -22,13 +22,12 @@ jobs:
 
       - name: Debug - Print Environment Variables
         run: |
-          echo "GCP_PROJECT: $GCP_PROJECT"
-          echo "GCR_REPOSITORY: $GCR_REPOSITORY"
-          echo "IMAGE_TAG: $IMAGE_TAG"
+          echo "GCP_PROJECT: ${{ secrets.GCP_PROJECT }}"
+          echo "GCR_REPOSITORY: ${{ secrets.GCR_REPOSITORY }}"
 
       - name: Build, tag, and push image to Google Container Registry
         env:
           IMAGE_TAG: latest
         run: |
           docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCR_REPOSITORY }}:$IMAGE_TAG .
-          docker push gcr.io/$GCP_PROJECT/$GCR_REPOSITORY:$IMAGE_TAG
+          docker push gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCR_REPOSITORY }}:$IMAGE_TAG
