@@ -1,0 +1,30 @@
+name: Continuous Integration
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Configure Docker for Google Cloud
+        run: gcloud auth configure-docker
+
+      - name: Build, tag, and push image to Google Container Registry
+        env:
+          GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+          GCR_REPOSITORY: nodejs-app
+          IMAGE_TAG: latest
+        run: |
+          docker build -t gcr.io/$GCP_PROJECT/$GCR_REPOSITORY:$IMAGE_TAG ./Go-app/
+          docker push gcr.io/$GCP_PROJECT/$GCR_REPOSITORY:$IMAGE_TAG
