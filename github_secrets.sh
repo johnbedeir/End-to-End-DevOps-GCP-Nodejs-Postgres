@@ -3,6 +3,7 @@
 # Set your GitHub repo details
 owner="johnbedeir"
 repo="End-to-End-DevOps-GCP-Nodejs-Postgres"
+repo_name="nodejs-app"
 cluster_name="cluster-1-testing-env"
 zone="europe-west1-d"
 project_id="johnydev"
@@ -23,7 +24,7 @@ for key_id in $key_ids; do
     gcloud iam service-accounts keys delete $key_id --iam-account=$service_account_email --quiet
 done
 
-echo "All keys deleted successfully for service account: $service_account_email"
+# echo "All keys deleted successfully for service account: $service_account_email"
 
 # Get GCP credentials
 gcloud iam service-accounts keys create ${filename} --iam-account ${service_account_email}
@@ -36,12 +37,12 @@ create_secret() {
     local secret_value="$2"
 
     # Create or update the secret in the GitHub repository using the 'gh' CLI tool
-    echo "Setting secret $secret_name..."
-    echo $secret_value | gh secret set $secret_name --repos=$owner/$repo
+    echo "Setting secret ${secret_name}..."
+    gh secret set "${secret_name}" -b"${secret_value}" --repos=${owner}/${repo}
     if [ $? -eq 0 ]; then
-        echo "Secret $secret_name set successfully."
+        echo "Secret ${secret_name} set successfully."
     else
-        echo "Failed to set secret $secret_name."
+        echo "Failed to set secret ${secret_name}."
         exit 1
     fi
 }
@@ -51,7 +52,7 @@ create_secret "GCP_CREDENTIALS" "${gcp_credentials}"
 create_secret "GCP_PROJECT" "${project_id}"
 create_secret "CLUSTER_NAME" "${cluster_name}" 
 create_secret "ZONE" "${zone}" 
-
+create_secret "GCR_REPOSITORY" "${repo_name}"
 
 # Cleanup
 echo "cleaning up gcp credentials..."
