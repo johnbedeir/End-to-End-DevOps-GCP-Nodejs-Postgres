@@ -11,7 +11,6 @@ service_account_email="terraform-sa@${project_id}.iam.gserviceaccount.com"
 key_ids=$(gcloud iam service-accounts keys list --iam-account=$service_account_email --format="value(name)")
 filename="gcp-credentials.json"
 
-
 # Check if there are any keys to delete
 if [ -z "$key_ids" ]; then
     echo "No keys found for service account: $service_account_email"
