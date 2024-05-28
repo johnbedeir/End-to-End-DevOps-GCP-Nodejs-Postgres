@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app-deploy
+  namespace: nodejs-app
+  labels:
+    app: nodejs-app
+spec:
+  selector:
+    matchLabels:
+      app: nodejs-app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: nodejs-app
+    spec:
+      containers:
+        - name: nodejs-app
+          image: gcr.io/johnydev/nodejs-app:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_HOST
+              value: "postgres-service"
+            - name: DB_DATABASE
+              value: "postgres_db"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  key: DB_PASSWORD
+            - name: DB_PORT
+              value: "5432"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-app-service
+  namespace: nodejs-app
+  labels:
+    app: nodejs-app
+spec:
+  selector:
+    app: nodejs-app
+  type: LoadBalancer
+  ports:
+    - name: nodejs-app
+      port: 8000
+      targetPort: 8000
