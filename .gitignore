@@ -4,3 +4,4 @@
 *.json
 .history
 *.out
+node_modules/
