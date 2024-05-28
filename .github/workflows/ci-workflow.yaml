@@ -20,6 +20,12 @@ jobs:
       - name: Configure Docker for Google Cloud
         run: gcloud auth configure-docker
 
+      - name: Debug - Print Environment Variables
+        run: |
+          echo "GCP_PROJECT: $GCP_PROJECT"
+          echo "GCR_REPOSITORY: $GCR_REPOSITORY"
+          echo "IMAGE_TAG: $IMAGE_TAG"
+
       - name: Build, tag, and push image to Google Container Registry
         env:
           GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
